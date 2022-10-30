@@ -14,7 +14,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Project Details"),
+        title: const Text("Add Project Detail"),
       ),
     );
   }
