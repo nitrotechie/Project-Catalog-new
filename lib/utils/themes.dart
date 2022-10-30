@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:proj_cat/utils/theme_prefences.dart';
+import 'package:project_catalog/utils/theme_prefences.dart';
 
 class MyTheme with ChangeNotifier {
   bool _isDark = false;

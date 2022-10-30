@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
-import 'package:proj_cat/screens/login_screen.dart';
-import 'package:proj_cat/services/helperfunctions.dart';
+import 'package:project_catalog/screens/login_screen.dart';
+import 'package:project_catalog/services/helperfunctions.dart';
 
 Future<User> googleSign() async {
   final GoogleSignIn _googleSignIn = GoogleSignIn();

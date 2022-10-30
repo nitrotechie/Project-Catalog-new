@@ -4,8 +4,8 @@ import 'dart:async';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:proj_cat/screens/home_screen.dart';
-import 'package:proj_cat/screens/register_screen.dart';
+import 'package:project_catalog/screens/home_screen.dart';
+import 'package:project_catalog/screens/register_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       child: Center(
         child: TextLiquidFill(
-          text: 'NewsIt',
+          text: 'ProjectCatalog',
           boxHeight: MediaQuery.of(context).size.height,
           boxWidth: MediaQuery.of(context).size.width,
           loadDuration: const Duration(seconds: 4),

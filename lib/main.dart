@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:proj_cat/screens/splash_screen.dart';
-import 'package:proj_cat/utils/themes.dart';
+import 'package:project_catalog/screens/splash_screen.dart';
+import 'package:project_catalog/utils/themes.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
