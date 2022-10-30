@@ -4,6 +4,7 @@ import 'package:project_catalog/screens/login_screen.dart';
 import 'package:project_catalog/services/helperfunctions.dart';
 import 'package:project_catalog/services/services.dart';
 import 'package:project_catalog/utils/themes.dart';
+import 'package:project_catalog/widgets/widgets.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
