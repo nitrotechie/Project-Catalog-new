@@ -46,6 +46,8 @@ dependencies:
   webview_flutter: ^3.0.1
   firebase_core_platform_interface: 4.5.1
   image_picker: ^0.8.4+4
+  firebase_storage:
+  file_picker: ^5.2.2
 
 dev_dependencies:
   flutter_test:
