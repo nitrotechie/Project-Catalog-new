@@ -5,7 +5,7 @@
  -keep class io.flutter.view.** { *; }
  -keep class io.flutter.** { *; }
  -keep class io.flutter.plugins.** { *; }
- -keep class com.google.firebase.** { *; } // uncomment this if you are using firebase in the project
+ #-keep class com.google.firebase.** { *; } // uncomment this if you are using firebase in the project
  -dontwarn io.flutter.embedding.**
  -ignorewarnings
  -keep class androidx.lifecycle.DefaultLifecycleObserver
