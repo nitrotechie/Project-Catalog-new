@@ -59,6 +59,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   void initState() {
     super.initState();
     projectId = uuid.v1();
+    Data.getUsername();
   }
 
   getPdf() async {

@@ -153,7 +153,7 @@ class Data {
   FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static List<String> bookmark = [];
-  static String userName = "";
+  static String userName = "Anon";
   static String api = "";
   static getUsername() {
     User? user = FirebaseAuth.instance.currentUser;
