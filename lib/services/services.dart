@@ -113,7 +113,6 @@ Future<bool> isEmailRegistered(String email) async {
   }
 }
 
-
 Future<bool> setBookmarks(String sourceName, String imageUrl, String title,
     String description, String url, String author, String publishDate) async {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -154,7 +153,7 @@ class Data {
   FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static List<String> bookmark = [];
-  static String userName = "Anon";
+  static String userName = "";
   static String api = "";
   static getUsername() {
     User? user = FirebaseAuth.instance.currentUser;

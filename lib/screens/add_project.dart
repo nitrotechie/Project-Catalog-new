@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project_catalog/screens/home_screen.dart';
 import 'package:project_catalog/services/services.dart';
 import 'package:project_catalog/utils/themes.dart';
 import 'package:uuid/uuid.dart';
@@ -423,6 +424,12 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                       await uploadImage();
                                       await uploadPdf();
                                       addData();
+                                      Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const HomeScreen(),
+                                        ),
+                                      );
                                     }
                                   },
                                 ),
