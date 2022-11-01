@@ -46,7 +46,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         .collection("comment")
         .doc("data")
         .collection(Project.projectId)
-        .doc(generateCommentId())
+        .doc(date.toString() + generateCommentId())
         .set({
       "userPic": Data.image == ""
           ? "https://firebasestorage.googleapis.com/v0/b/project-catalog-modified.appspot.com/o/default_profile.jpg?alt=media&token=df920e56-fa2d-4d76-aa7f-51817de4112e"
@@ -54,6 +54,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
       "userName": Data.userName,
       "date": Data.getDate(date.toString()),
       "comment": comment.text,
+      "commentId": commentId,
     });
   }
 

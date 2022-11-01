@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Data.image == "null" || Data.image == ""
                                   ? const Icon(Icons.person)
                                   : ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(23),
                                       child: Image.network(Data.image),
                                     ),
                             ),
