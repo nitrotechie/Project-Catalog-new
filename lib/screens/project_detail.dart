@@ -87,198 +87,203 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
               ],
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      Project.author,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).iconTheme.color,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        Project.author,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                      ),
+                      Text(
+                        Project.date,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "assets/images/default.gif",
+                      image: Project.imageUrl,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        Project.name,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          User? user = FirebaseAuth.instance.currentUser;
+                          if (user != null) {
+                          } else {
+                            final snackBar = SnackBar(
+                              content: const Text(
+                                  "Please Login to bookmark a project."),
+                              action: SnackBarAction(
+                                label: "Ok",
+                                textColor: Theme.of(context).canvasColor,
+                                onPressed: () {},
+                              ),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.bookmark_border,
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    Project.summary,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w100,
+                    ),
+                  ),
+                  Text(
+                    Project.additionalDetails,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w100,
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.lightBlue.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(
+                        20,
                       ),
                     ),
-                    Text(
-                      Project.date,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: FadeInImage.assetNetwork(
-                    placeholder: "assets/images/default.gif",
-                    image: Project.imageUrl,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      Project.name,
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        User? user = FirebaseAuth.instance.currentUser;
-                        if (user != null) {
-                        } else {
-                          final snackBar = SnackBar(
-                            content: const Text(
-                                "Please Login to bookmark a project."),
-                            action: SnackBarAction(
-                              label: "Ok",
-                              textColor: Theme.of(context).canvasColor,
-                              onPressed: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Icon(Icons.picture_as_pdf),
+                          const Text(
+                            "ProjectDetails.pdf",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
                             ),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.bookmark_border,
-                        size: 30,
+                          ),
+                          TextButton(
+                            child: change == true
+                                ? Text("Downloading.... $progress%")
+                                : const Text("View File"),
+                            onPressed: () async {
+                              setState(() {
+                                change = true;
+                              });
+                              Map<Permission, PermissionStatus> statuses =
+                                  await [
+                                Permission.storage,
+                              ].request();
+                              if (statuses[Permission.storage]!.isGranted) {
+                                var dir =
+                                    (await DownloadsPath.downloadsDirectory())
+                                        ?.path;
+                                if (dir != null) {
+                                  String savename = "${Project.name}.pdf";
+                                  savePath = "$dir/$savename";
+
+                                  try {
+                                    await Dio().download(
+                                      Project.pdfUrl,
+                                      savePath,
+                                      onReceiveProgress: (received, total) {
+                                        if (total != -1) {
+                                          progress = (received / total * 100)
+                                              .toStringAsFixed(0);
+                                          setState(() {});
+                                          print(progress);
+                                        }
+                                      },
+                                    );
+                                    setState(() {
+                                      change = false;
+                                    });
+                                    final snackBar = SnackBar(
+                                      content: const Text(
+                                          "File is saved to download folder."),
+                                      action: SnackBarAction(
+                                        label: "Ok",
+                                        // ignore: use_build_context_synchronously
+                                        textColor:
+                                            Theme.of(context).canvasColor,
+                                        onPressed: () {},
+                                      ),
+                                    );
+                                    // ignore: use_build_context_synchronously
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  } on DioError catch (e) {
+                                    final snackBar = SnackBar(
+                                      content: Text(e.message),
+                                      action: SnackBarAction(
+                                        label: "Ok",
+                                        // ignore: use_build_context_synchronously
+                                        textColor:
+                                            Theme.of(context).canvasColor,
+                                        onPressed: () {},
+                                      ),
+                                    );
+                                    // ignore: use_build_context_synchronously
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  }
+                                }
+                              } else {
+                                final snackBar = SnackBar(
+                                  content: const Text(
+                                      "No permission to read and write."),
+                                  action: SnackBarAction(
+                                    label: "Ok",
+                                    // ignore: use_build_context_synchronously
+                                    textColor: Theme.of(context).canvasColor,
+                                    onPressed: () {},
+                                  ),
+                                );
+                                // ignore: use_build_context_synchronously
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              }
+                              openFile(savePath);
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-                Text(
-                  Project.summary,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w100,
                   ),
-                ),
-                Text(
-                  Project.additionalDetails,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w100,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlue.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(
-                      20,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Icon(Icons.picture_as_pdf),
-                        const Text(
-                          "ProjectDetails.pdf",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                        ),
-                        TextButton(
-                          child: change == true
-                              ? Text("Downloading.... $progress%")
-                              : const Text("View File"),
-                          onPressed: () async {
-                            setState(() {
-                              change = true;
-                            });
-                            Map<Permission, PermissionStatus> statuses = await [
-                              Permission.storage,
-                            ].request();
-                            if (statuses[Permission.storage]!.isGranted) {
-                              var dir =
-                                  (await DownloadsPath.downloadsDirectory())
-                                      ?.path;
-                              if (dir != null) {
-                                String savename = "${Project.name}.pdf";
-                                savePath = "$dir/$savename";
-
-                                try {
-                                  await Dio().download(
-                                    Project.pdfUrl,
-                                    savePath,
-                                    onReceiveProgress: (received, total) {
-                                      if (total != -1) {
-                                        progress = (received / total * 100)
-                                            .toStringAsFixed(0);
-                                        setState(() {});
-                                        print(progress);
-                                      }
-                                    },
-                                  );
-                                  setState(() {
-                                    change = false;
-                                  });
-                                  final snackBar = SnackBar(
-                                    content: const Text(
-                                        "File is saved to download folder."),
-                                    action: SnackBarAction(
-                                      label: "Ok",
-                                      // ignore: use_build_context_synchronously
-                                      textColor: Theme.of(context).canvasColor,
-                                      onPressed: () {},
-                                    ),
-                                  );
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                } on DioError catch (e) {
-                                  final snackBar = SnackBar(
-                                    content: Text(e.message),
-                                    action: SnackBarAction(
-                                      label: "Ok",
-                                      // ignore: use_build_context_synchronously
-                                      textColor: Theme.of(context).canvasColor,
-                                      onPressed: () {},
-                                    ),
-                                  );
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                }
-                              }
-                            } else {
-                              final snackBar = SnackBar(
-                                content: const Text(
-                                    "No permission to read and write."),
-                                action: SnackBarAction(
-                                  label: "Ok",
-                                  // ignore: use_build_context_synchronously
-                                  textColor: Theme.of(context).canvasColor,
-                                  onPressed: () {},
-                                ),
-                              );
-                              // ignore: use_build_context_synchronously
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            }
-                            openFile(savePath);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                
-              ],
+                ],
+              ),
             ),
           ),
         ),
