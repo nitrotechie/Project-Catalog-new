@@ -149,7 +149,24 @@ delete(String title) {
       .delete();
 }
 
+class Bookmark {
+  final String projectId;
+
+  const Bookmark({
+    required this.projectId,
+  });
+
+  factory Bookmark.fromMap(Map<dynamic, dynamic> map) {
+    return Bookmark(
+      projectId: map['projectId'] ?? '',
+    );
+  }
+}
+
 class Project {
+  static final firebase = FirebaseFirestore.instance;
+  static var currentUser = FirebaseAuth.instance.currentUser;
+  static List<String> bookmark = [];
   static String additionalDetails = "";
   static String author = "";
   static String catagory = "";
@@ -159,6 +176,54 @@ class Project {
   static String pdfUrl = "";
   static String summary = "";
   static String projectId = "";
+
+  static addBookmark() async {
+    await firebase
+        .collection("bookmark")
+        .doc(currentUser!.uid)
+        .collection('data')
+        .doc(Project.projectId)
+        .set({
+      "projectId": Project.projectId,
+    });
+  }
+
+  static getBookmark() async {
+    var querySnapshot = await firebase
+        .collection('bookmark')
+        .doc(currentUser!.uid)
+        .collection('data')
+        .get();
+    for (var queryDocumentSnapshot in querySnapshot.docs) {
+      Map<String, dynamic> data = queryDocumentSnapshot.data();
+      bookmark.add(data['projectId']);
+    }
+  }
+
+  static deleteBookmark() async {
+    bookmark.remove(Project.projectId);
+    await firebase
+        .collection('bookmark')
+        .doc(currentUser!.uid)
+        .collection('data')
+        .doc(Project.projectId)
+        .delete();
+  }
+
+  static deleteProject() async {
+    await firebase
+        .collection('data')
+        .doc('All')
+        .collection('data')
+        .doc(Project.projectId)
+        .delete();
+    await firebase
+        .collection('data')
+        .doc(Project.catagory)
+        .collection('data')
+        .doc(Project.projectId)
+        .delete();
+  }
 }
 
 class Data {

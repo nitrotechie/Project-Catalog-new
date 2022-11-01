@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:project_catalog/screens/home_screen.dart';
 import 'package:project_catalog/services/services.dart';
@@ -84,21 +85,3 @@ class GoogleBtn1 extends StatelessWidget {
   }
 }
 
-class Article {
-  String? title;
-  String? author;
-  String? description;
-  String? urlToImage;
-  DateTime? publshedAt;
-  String? content;
-  String? articleUrl;
-
-  Article(
-      {this.title,
-      this.description,
-      this.author,
-      this.content,
-      this.publshedAt,
-      this.urlToImage,
-      this.articleUrl});
-}

@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:project_catalog/screens/bookmarks.dart';
 import 'package:project_catalog/screens/home_screen.dart';
 import 'package:project_catalog/screens/login_screen.dart';
+import 'package:project_catalog/screens/my_projects.dart';
 import 'package:project_catalog/services/services.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -93,6 +95,32 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         GestureDetector(
                           child: Row(
                             children: const [
+                              Icon(Icons.folder),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "My Project",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const MyProjectScreen()));
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        GestureDetector(
+                          child: Row(
+                            children: const [
                               Icon(Icons.bookmark),
                               SizedBox(
                                 width: 10,
@@ -106,7 +134,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               ),
                             ],
                           ),
-                          onTap: () {
+                          onTap: () async {
+                            await Project.getBookmark();
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

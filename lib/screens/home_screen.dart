@@ -63,8 +63,21 @@ class _HomeScreenState extends State<HomeScreen> {
             size: 40,
           ),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const AddProjectScreen()));
+            User? user = FirebaseAuth.instance.currentUser;
+            if (user != null) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const AddProjectScreen()));
+            } else {
+              final snackBar = SnackBar(
+                content: const Text("Please Login to Add a Project."),
+                action: SnackBarAction(
+                  label: "Ok",
+                  textColor: Theme.of(context).canvasColor,
+                  onPressed: () {},
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
           },
         ),
         drawer: const CustomDrawer(),
@@ -432,33 +445,64 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   x["catagory"],
                                                 ),
                                               ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  User? user = FirebaseAuth
-                                                      .instance.currentUser;
-                                                  if (user != null) {
-                                                  } else {
-                                                    final snackBar = SnackBar(
-                                                      content: const Text(
-                                                          "Please Login to bookmark a project."),
-                                                      action: SnackBarAction(
-                                                        label: "Ok",
-                                                        textColor:
-                                                            Theme.of(context)
-                                                                .canvasColor,
-                                                        onPressed: () {},
+                                              Project.bookmark
+                                                      .contains(x['projectId'])
+                                                  ? IconButton(
+                                                      onPressed: () async {
+                                                        setState(() {
+                                                          Project.projectId =
+                                                              x['projectId'];
+                                                        });
+                                                        await Project
+                                                            .deleteBookmark();
+                                                        setState(() {});
+                                                      },
+                                                      icon: const Icon(
+                                                        Icons.bookmark,
+                                                        size: 30,
                                                       ),
-                                                    );
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(snackBar);
-                                                  }
-                                                },
-                                                icon: const Icon(
-                                                  Icons.bookmark_border,
-                                                  size: 30,
-                                                ),
-                                              ),
+                                                    )
+                                                  : IconButton(
+                                                      onPressed: () async {
+                                                        setState(() {
+                                                          Project.projectId =
+                                                              x['projectId'];
+                                                        });
+                                                        User? user =
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser;
+                                                        if (user != null) {
+                                                          await Project
+                                                              .addBookmark();
+                                                          await Project
+                                                              .getBookmark();
+                                                          setState(() {});
+                                                        } else {
+                                                          final snackBar =
+                                                              SnackBar(
+                                                            content: const Text(
+                                                                "Please Login to bookmark a project."),
+                                                            action:
+                                                                SnackBarAction(
+                                                              label: "Ok",
+                                                              textColor: Theme.of(
+                                                                      context)
+                                                                  .canvasColor,
+                                                              onPressed: () {},
+                                                            ),
+                                                          );
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                                  snackBar);
+                                                        }
+                                                      },
+                                                      icon: const Icon(
+                                                        Icons.bookmark_border,
+                                                        size: 30,
+                                                      ),
+                                                    ),
                                             ],
                                           ),
                                           const SizedBox(

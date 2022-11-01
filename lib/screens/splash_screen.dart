@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -52,20 +50,29 @@ class _SplashScreenState extends State<SplashScreen> {
       decoration: const BoxDecoration(
         color: Colors.blue,
       ),
-      child: Center(
-        child: TextLiquidFill(
-          text: 'ProjectCatalog',
-          boxHeight: MediaQuery.of(context).size.height,
-          boxWidth: MediaQuery.of(context).size.width,
-          loadDuration: const Duration(seconds: 4),
-          waveDuration: const Duration(seconds: 4),
-          waveColor: Theme.of(context).primaryColor,
-          boxBackgroundColor: Colors.blue,
-          textStyle: const TextStyle(
-            fontSize: 50.0,
-            fontWeight: FontWeight.bold,
+      child: Column(
+        children: [
+          Center(
+            child: Image.asset(
+              'assets/images/logo.png',
+            ),
           ),
-        ),
+          Center(
+            child: TextLiquidFill(
+              text: 'ProjectCatalog',
+              boxHeight: MediaQuery.of(context).size.height * 0.2,
+              boxWidth: MediaQuery.of(context).size.width,
+              loadDuration: const Duration(seconds: 4),
+              waveDuration: const Duration(seconds: 4),
+              waveColor: Theme.of(context).primaryColor,
+              boxBackgroundColor: Colors.blue,
+              textStyle: const TextStyle(
+                fontSize: 50.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     ));
   }

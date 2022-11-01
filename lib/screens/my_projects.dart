@@ -1,20 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:project_catalog/screens/project_detail.dart';
 import 'package:project_catalog/services/services.dart';
 import 'package:project_catalog/utils/methods.dart';
 import 'package:project_catalog/utils/themes.dart';
 import 'package:project_catalog/widgets/custom_drawer.dart';
 
-class BookmarkScreen extends StatefulWidget {
-  const BookmarkScreen({Key? key}) : super(key: key);
+class MyProjectScreen extends StatefulWidget {
+  const MyProjectScreen({Key? key}) : super(key: key);
 
   @override
-  State<BookmarkScreen> createState() => _BookmarkScreenState();
+  State<MyProjectScreen> createState() => _MyProjectScreenState();
 }
 
-class _BookmarkScreenState extends State<BookmarkScreen> {
+class _MyProjectScreenState extends State<MyProjectScreen> {
   final firebase = FirebaseFirestore.instance;
   var currentUser = FirebaseAuth.instance.currentUser;
   MyTheme theme = MyTheme();
@@ -125,7 +127,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                   child: Text(
-                    "Your Bookmarks",
+                    "Your Project",
                     style: TextStyle(
                       fontSize: 30,
                       color: Theme.of(context).secondaryHeaderColor,
@@ -148,7 +150,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                             itemBuilder: (context, i) {
                               QueryDocumentSnapshot x = snapshot.data!.docs[i];
 
-                              return Project.bookmark.contains(x['projectId'])
+                              return x['uid'] == currentUser!.uid
                                   ? FittedBox(
                                       fit: BoxFit.fill,
                                       child: GestureDetector(
@@ -197,64 +199,21 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                                       x["catagory"],
                                                     ),
                                                   ),
-                                                  Project.bookmark
-                                                      .contains(x['projectId'])
-                                                  ? IconButton(
-                                                      onPressed: () async {
-                                                        setState(() {
-                                                          Project.projectId =
-                                                              x['projectId'];
-                                                        });
-                                                        await Project
-                                                            .deleteBookmark();
-                                                        setState(() {});
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.bookmark,
-                                                        size: 30,
-                                                      ),
-                                                    )
-                                                  : IconButton(
-                                                      onPressed: () async {
-                                                        setState(() {
-                                                          Project.projectId =
-                                                              x['projectId'];
-                                                        });
-                                                        User? user =
-                                                            FirebaseAuth
-                                                                .instance
-                                                                .currentUser;
-                                                        if (user != null) {
-                                                          await Project
-                                                              .addBookmark();
-                                                          await Project
-                                                              .getBookmark();
-                                                          setState(() {});
-                                                        } else {
-                                                          final snackBar =
-                                                              SnackBar(
-                                                            content: const Text(
-                                                                "Please Login to bookmark a project."),
-                                                            action:
-                                                                SnackBarAction(
-                                                              label: "Ok",
-                                                              textColor: Theme.of(
-                                                                      context)
-                                                                  .canvasColor,
-                                                              onPressed: () {},
-                                                            ),
-                                                          );
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                                  snackBar);
-                                                        }
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.bookmark_border,
-                                                        size: 30,
-                                                      ),
+                                                  IconButton(
+                                                    onPressed: () async {
+                                                      Project.projectId =
+                                                          x['projectId'];
+                                                      Project.catagory =
+                                                          x['catagory'];
+                                                      await Project
+                                                          .deleteProject();
+                                                      setState(() {});
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.delete,
+                                                      size: 30,
                                                     ),
+                                                  ),
                                                 ],
                                               ),
                                               const SizedBox(

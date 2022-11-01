@@ -21,6 +21,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Project.getBookmark();
   }
 
   openFile(String savePath) {
@@ -157,38 +158,57 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                       fit: BoxFit.fill,
                     ),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        Project.name,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          User? user = FirebaseAuth.instance.currentUser;
-                          if (user != null) {
-                          } else {
-                            final snackBar = SnackBar(
-                              content: const Text(
-                                  "Please Login to bookmark a project."),
-                              action: SnackBarAction(
-                                label: "Ok",
-                                textColor: Theme.of(context).canvasColor,
-                                onPressed: () {},
-                              ),
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.bookmark_border,
-                          size: 30,
+                      Expanded(
+                        child: Text(
+                          Project.name,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ),
+                      Project.bookmark.contains(Project.projectId)
+                          ? IconButton(
+                              onPressed: () async {
+                                await Project.deleteBookmark();
+                                setState(() {});
+                              },
+                              icon: const Icon(
+                                Icons.bookmark,
+                                size: 30,
+                              ),
+                            )
+                          : IconButton(
+                              onPressed: () async {
+                                User? user = FirebaseAuth.instance.currentUser;
+                                if (user != null) {
+                                  await Project.addBookmark();
+                                  await Project.getBookmark();
+                                  setState(() {});
+                                } else {
+                                  final snackBar = SnackBar(
+                                    content: const Text(
+                                        "Please Login to bookmark a project."),
+                                    action: SnackBarAction(
+                                      label: "Ok",
+                                      textColor: Theme.of(context).canvasColor,
+                                      onPressed: () {},
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.bookmark_border,
+                                size: 30,
+                              ),
+                            ),
                     ],
                   ),
                   Text(
@@ -198,12 +218,26 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                       fontWeight: FontWeight.w100,
                     ),
                   ),
-                  Text(
-                    Project.additionalDetails,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w100,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Keywords: ",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          Project.additionalDetails,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w100,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 20,

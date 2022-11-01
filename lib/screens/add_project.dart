@@ -275,8 +275,8 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                               color: Theme.of(context).buttonColor,
                             ),
                           ),
-                          hintText: "Enter Any Addition details (if any)",
-                          labelText: "Additional Detail",
+                          hintText: "Enter Any Keywords",
+                          labelText: "Keyword",
                         ),
                       ),
                       const SizedBox(
