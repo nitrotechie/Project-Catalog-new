@@ -399,6 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Project.imageUrl = x['imageUrl'];
                                       Project.summary = x['summary'];
                                       Project.name = x['name'];
+                                      Project.projectId = x['projectId'];
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(

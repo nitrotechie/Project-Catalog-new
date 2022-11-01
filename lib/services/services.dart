@@ -149,7 +149,7 @@ delete(String title) {
       .delete();
 }
 
-class Project{
+class Project {
   static String additionalDetails = "";
   static String author = "";
   static String catagory = "";
@@ -158,7 +158,9 @@ class Project{
   static String name = "";
   static String pdfUrl = "";
   static String summary = "";
+  static String projectId = "";
 }
+
 class Data {
   FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

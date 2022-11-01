@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,8 @@ import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart
 import 'package:open_filex/open_filex.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project_catalog/services/services.dart';
+import 'package:project_catalog/utils/themes.dart';
+import 'package:uuid/uuid.dart';
 
 class ProjectDetailScreen extends StatefulWidget {
   const ProjectDetailScreen({Key? key}) : super(key: key);
@@ -26,6 +29,33 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
   var change = false;
   var progress = "";
+  final TextEditingController comment = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final firebase = FirebaseFirestore.instance;
+  DateTime date = DateTime.now();
+  var uuid = const Uuid();
+  var commentId = "";
+
+  String generateCommentId() {
+    commentId = uuid.v1();
+    return commentId;
+  }
+
+  addComment() async {
+    await firebase
+        .collection("comment")
+        .doc("data")
+        .collection(Project.projectId)
+        .doc(generateCommentId())
+        .set({
+      "userPic": Data.image == ""
+          ? "https://firebasestorage.googleapis.com/v0/b/project-catalog-modified.appspot.com/o/default_profile.jpg?alt=media&token=df920e56-fa2d-4d76-aa7f-51817de4112e"
+          : Data.image,
+      "userName": Data.userName,
+      "date": Data.getDate(date.toString()),
+      "comment": comment.text,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +204,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                       fontWeight: FontWeight.w100,
                     ),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.lightBlue.withOpacity(0.8),
@@ -223,7 +256,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                           progress = (received / total * 100)
                                               .toStringAsFixed(0);
                                           setState(() {});
-                                          print(progress);
                                         }
                                       },
                                     );
@@ -282,6 +314,147 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "Discussion",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                      stream: firebase
+                          .collection("comment")
+                          .doc("data")
+                          .collection(Project.projectId)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        return snapshot.hasData
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                itemCount: snapshot.data!.docs.length,
+                                itemBuilder: (context, i) {
+                                  QueryDocumentSnapshot x =
+                                      snapshot.data!.docs[i];
+                                  return Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              height: 45,
+                                              width: 45,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white
+                                                      .withOpacity(0.4),
+                                                  boxShadow:
+                                                      MyTheme.neumorpShadow,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(23),
+                                                child:
+                                                    Image.network(x['userPic']),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                x['userName'],
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              x['date'],
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w100,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 55),
+                                          child: Text(
+                                            x['comment'],
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w100,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              )
+                            : Container();
+                      }),
+                  Form(
+                    key: _formKey,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 60,
+                          width: MediaQuery.of(context).size.width * 0.81,
+                          child: TextFormField(
+                            controller: comment,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: BorderSide(
+                                  color: Theme.of(context).buttonColor,
+                                ),
+                              ),
+                              hintText: "Add Comment",
+                              labelText: "Comment",
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Please Enter Comment";
+                              } else {
+                                return null;
+                              }
+                            },
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            if (_formKey.currentState!.validate()) {
+                              await addComment();
+                            }
+                            comment.text = "";
+                            setState(() {});
+                          },
+                          icon: const Icon(
+                            Icons.send,
+                            size: 30,
+                          ),
+                        )
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
