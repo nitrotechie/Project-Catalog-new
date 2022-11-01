@@ -121,7 +121,38 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   }
 
   addData() async {
-    await firebase.collection("data").doc(projectId).set({
+    await firebase
+        .collection("data")
+        .doc(dropDownValue)
+        .collection("data")
+        .doc(projectId)
+        .set({
+      "projectId": projectId,
+      "name": projectTitle.text,
+      "author": Data.userName,
+      "summary": projectSummary.text,
+      "additionalDetails": additionalDetails.text,
+      "imageUrl": imageUrl,
+      "pdfUrl": pdfUrl,
+      "date": Data.getDate(date),
+      "catagory": dropDownValue,
+      "uid": currentUser!.uid,
+    });
+    var info = firebase
+        .collection("data")
+        .doc(currentUser!.uid)
+        .collection("data")
+        .snapshots();
+    print(info);
+  }
+
+  addDatainAll() async {
+    await firebase
+        .collection("data")
+        .doc("All")
+        .collection("data")
+        .doc(projectId)
+        .set({
       "projectId": projectId,
       "name": projectTitle.text,
       "author": Data.userName,
@@ -149,7 +180,26 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Project Detail"),
+        centerTitle: false,
+        elevation: 0,
+        backgroundColor: Theme.of(context).canvasColor,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.close,
+            size: 30,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: Text(
+          "Add Project Details",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).iconTheme.color,
+          ),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -425,6 +475,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                       await uploadImage();
                                       await uploadPdf();
                                       addData();
+                                      addDatainAll();
                                       Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
                                           builder: (context) =>

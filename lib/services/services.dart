@@ -149,12 +149,21 @@ delete(String title) {
       .delete();
 }
 
+class Project{
+  static String additionalDetails = "";
+  static String author = "";
+  static String catagory = "";
+  static String date = "";
+  static String imageUrl = "";
+  static String name = "";
+  static String pdfUrl = "";
+  static String summary = "";
+}
 class Data {
   FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static List<String> bookmark = [];
   static String userName = "Anon";
-  static String api = "";
   static getUsername() {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -170,13 +179,6 @@ class Data {
     }
   }
 
-  getApiId() {
-    _firestore.collection('api').doc('api-id').get().then((value) {
-      api = value['api'];
-      print(api);
-    });
-  }
-
   getBookmark(String description) {
     _firestore
         .collection('users')
@@ -186,8 +188,6 @@ class Data {
         .get()
         .then((value) {
       bookmark.add(value['description']);
-      print("This is a");
-      print(bookmark);
     });
   }
 

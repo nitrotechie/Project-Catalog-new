@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project_catalog/screens/add_project.dart';
+import 'package:project_catalog/screens/project_detail.dart';
 import 'package:project_catalog/services/services.dart';
 import 'package:project_catalog/utils/methods.dart';
 import 'package:project_catalog/utils/themes.dart';
@@ -16,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController searchController = TextEditingController();
+  final firebase = FirebaseFirestore.instance;
+  var currentUser = FirebaseAuth.instance.currentUser;
   MyTheme theme = MyTheme();
   Data d = Data();
   List newslist = [];
@@ -28,13 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var fur = false;
   var fiv = false;
   var six = false;
-  var all = "";
-  var computer = "";
-  var mechanical = "";
-  var robotics = "";
-  var civil = "";
-  var electrical = "";
-  var electronicsAndComm = "";
+  var display = "All";
   @override
   void initState() {
     // ignore: todo
@@ -54,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Consumer<MyTheme>(builder: (context, MyTheme theme, child) {
       return Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -209,12 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onChanged: (value) {
                           setState(() {
                             if (value.isEmpty) {
-                              // News.url = News.topHeadlineUrl;
-                            } else {
-                              String searchUrl = "";
-                              // News.url = searchUrl;
-                            }
-                            // getHeadlines();
+                            } else {}
                           });
                         },
                         style: TextStyle(
@@ -260,8 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: "All",
                           onTap: () {
                             setState(() {
-                              // News.url = top;
-                              // getHeadlines();
+                              display = "All";
                               zero = true;
                               one = false;
                               two = false;
@@ -277,8 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: "Computer",
                           onTap: () {
                             setState(() {
-                              // News.url = business;
-                              // getHeadlines();
+                              display = "Computer";
                               zero = false;
                               one = true;
                               two = false;
@@ -294,8 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: "Mechanical",
                           onTap: () {
                             setState(() {
-                              // News.url = entertainment;
-                              // getHeadlines();
+                              display = "Mechanical";
                               zero = false;
                               one = false;
                               thr = false;
@@ -311,8 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: "Robotics",
                           onTap: () {
                             setState(() {
-                              // News.url = health;
-                              // getHeadlines();
+                              display = "Robotics";
                               zero = false;
                               one = false;
                               two = false;
@@ -328,8 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: "Civil",
                           onTap: () {
                             setState(() {
-                              // News.url = science;
-                              // getHeadlines();
+                              display = "Civil";
                               zero = false;
                               one = false;
                               two = false;
@@ -345,8 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: "Electronics",
                           onTap: () {
                             setState(() {
-                              // News.url = sports;
-                              // getHeadlines();
+                              display = "Electronics";
                               zero = false;
                               one = false;
                               two = false;
@@ -362,8 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: "Elec&Comm",
                           onTap: () {
                             setState(() {
-                              // News.url = technology;
-                              // getHeadlines();
+                              display = "Electronics & Communication";
                               zero = false;
                               one = false;
                               two = false;
@@ -380,6 +369,157 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(
                     height: 20,
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: firebase
+                        .collection("data")
+                        .doc(display)
+                        .collection("data")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      return snapshot.hasData
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              physics: const ScrollPhysics(),
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, i) {
+                                QueryDocumentSnapshot x =
+                                    snapshot.data!.docs[i];
+
+                                return FittedBox(
+                                  fit: BoxFit.fill,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Project.additionalDetails =
+                                          x['additionalDetails'];
+                                      Project.author = x['author'];
+                                      Project.catagory = x['catagory'];
+                                      Project.date = x['date'];
+                                      Project.pdfUrl = x['pdfUrl'];
+                                      Project.imageUrl = x['imageUrl'];
+                                      Project.summary = x['summary'];
+                                      Project.name = x['name'];
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const ProjectDetailScreen()));
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.all(20),
+                                      padding: const EdgeInsets.all(10),
+                                      width: size.width,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .cardColor
+                                            .withOpacity(0.4),
+                                        boxShadow: MyTheme.neumorpShadow,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  x["catagory"],
+                                                ),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  User? user = FirebaseAuth
+                                                      .instance.currentUser;
+                                                  if (user != null) {
+                                                  } else {
+                                                    final snackBar = SnackBar(
+                                                      content: const Text(
+                                                          "Please Login to bookmark a project."),
+                                                      action: SnackBarAction(
+                                                        label: "Ok",
+                                                        textColor:
+                                                            Theme.of(context)
+                                                                .canvasColor,
+                                                        onPressed: () {},
+                                                      ),
+                                                    );
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(snackBar);
+                                                  }
+                                                },
+                                                icon: const Icon(
+                                                  Icons.bookmark_border,
+                                                  size: 30,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            child: FadeInImage.assetNetwork(
+                                              placeholder:
+                                                  "assets/images/default.gif",
+                                              image: x['imageUrl'],
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 15, bottom: 5),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    x['author'],
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  x['date'],
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Text(
+                                            x['name'],
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            x['summary'],
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w100),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                    },
                   ),
                 ],
               ),
