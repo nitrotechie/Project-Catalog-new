@@ -145,6 +145,7 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
                     return snapshot.hasData
                         ? ListView.builder(
                             shrinkWrap: true,
+                            reverse: true,
                             physics: const ScrollPhysics(),
                             itemCount: snapshot.data!.docs.length,
                             itemBuilder: (context, i) {

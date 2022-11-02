@@ -35,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var fiv = false;
   var six = false;
   var display = "All";
+  var search = false;
   @override
   void initState() {
     // ignore: todo
@@ -221,10 +222,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         controller: searchController,
                         textAlign: TextAlign.justify,
                         onChanged: (value) {
-                          setState(() {
-                            if (value.isEmpty) {
-                            } else {}
-                          });
+                          if (value.isEmpty) {
+                            setState(() {
+                              search = false;
+                            });
+                          } else {
+                            setState(() {
+                              search = true;
+                            });
+                          }
                         },
                         style: TextStyle(
                           color: Colors.grey.shade300,
@@ -393,172 +399,415 @@ class _HomeScreenState extends State<HomeScreen> {
                       return snapshot.hasData
                           ? ListView.builder(
                               shrinkWrap: true,
+                              reverse: true,
                               physics: const ScrollPhysics(),
                               itemCount: snapshot.data!.docs.length,
                               itemBuilder: (context, i) {
                                 QueryDocumentSnapshot x =
                                     snapshot.data!.docs[i];
-
-                                return FittedBox(
-                                  fit: BoxFit.fill,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Project.additionalDetails =
-                                          x['additionalDetails'];
-                                      Project.author = x['author'];
-                                      Project.catagory = x['catagory'];
-                                      Project.date = x['date'];
-                                      Project.pdfUrl = x['pdfUrl'];
-                                      Project.imageUrl = x['imageUrl'];
-                                      Project.summary = x['summary'];
-                                      Project.name = x['name'];
-                                      Project.projectId = x['projectId'];
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  const ProjectDetailScreen()));
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.all(20),
-                                      padding: const EdgeInsets.all(10),
-                                      width: size.width,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .cardColor
-                                            .withOpacity(0.4),
-                                        boxShadow: MyTheme.neumorpShadow,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  x["catagory"],
-                                                ),
-                                              ),
-                                              Project.bookmark
-                                                      .contains(x['projectId'])
-                                                  ? IconButton(
-                                                      onPressed: () async {
-                                                        setState(() {
-                                                          Project.projectId =
-                                                              x['projectId'];
-                                                        });
-                                                        await Project
-                                                            .deleteBookmark();
-                                                        setState(() {});
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.bookmark,
-                                                        size: 30,
-                                                      ),
-                                                    )
-                                                  : IconButton(
-                                                      onPressed: () async {
-                                                        setState(() {
-                                                          Project.projectId =
-                                                              x['projectId'];
-                                                        });
-                                                        User? user =
-                                                            FirebaseAuth
-                                                                .instance
-                                                                .currentUser;
-                                                        if (user != null) {
-                                                          await Project
-                                                              .addBookmark();
-                                                          await Project
-                                                              .getBookmark();
-                                                          setState(() {});
-                                                        } else {
-                                                          final snackBar =
-                                                              SnackBar(
-                                                            content: const Text(
-                                                                "Please Login to bookmark a project."),
-                                                            action:
-                                                                SnackBarAction(
-                                                              label: "Ok",
-                                                              textColor: Theme.of(
-                                                                      context)
-                                                                  .canvasColor,
-                                                              onPressed: () {},
-                                                            ),
-                                                          );
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                                  snackBar);
-                                                        }
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.bookmark_border,
-                                                        size: 30,
-                                                      ),
-                                                    ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
+                                String name = x['name'];
+                                String projectName = name.toLowerCase();
+                                print(projectName);
+                                String summary = x['summary'];
+                                String projectSummary = summary.toLowerCase();
+                                String keyword = x['additionalDetails'];
+                                String projectKeyword = keyword.toLowerCase();
+                                String author = x['author'];
+                                String projectAuthor = author.toLowerCase();
+                                print(projectAuthor);
+                                String date = x['date'];
+                                String projectDate = date.toLowerCase();
+                                String catagory = x['catagory'];
+                                String projectCatagory = catagory.toLowerCase();
+                                return search == false
+                                    ? FittedBox(
+                                        fit: BoxFit.fill,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Project.additionalDetails =
+                                                x['additionalDetails'];
+                                            Project.author = x['author'];
+                                            Project.catagory = x['catagory'];
+                                            Project.date = x['date'];
+                                            Project.pdfUrl = x['pdfUrl'];
+                                            Project.imageUrl = x['imageUrl'];
+                                            Project.summary = x['summary'];
+                                            Project.name = x['name'];
+                                            Project.projectId = x['projectId'];
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        const ProjectDetailScreen()));
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.all(20),
+                                            padding: const EdgeInsets.all(10),
+                                            width: size.width,
                                             decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .cardColor
+                                                  .withOpacity(0.4),
+                                              boxShadow: MyTheme.neumorpShadow,
                                               borderRadius:
-                                                  BorderRadius.circular(15),
+                                                  BorderRadius.circular(10),
                                             ),
-                                            child: FadeInImage.assetNetwork(
-                                              placeholder:
-                                                  "assets/images/default.gif",
-                                              image: x['imageUrl'],
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 15, bottom: 5),
-                                            child: Row(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    x['author'],
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        x["catagory"],
+                                                      ),
                                                     ),
+                                                    Project.bookmark.contains(
+                                                            x['projectId'])
+                                                        ? IconButton(
+                                                            onPressed:
+                                                                () async {
+                                                              setState(() {
+                                                                Project.projectId =
+                                                                    x['projectId'];
+                                                              });
+                                                              await Project
+                                                                  .deleteBookmark();
+                                                              setState(() {});
+                                                            },
+                                                            icon: const Icon(
+                                                              Icons.bookmark,
+                                                              size: 30,
+                                                            ),
+                                                          )
+                                                        : IconButton(
+                                                            onPressed:
+                                                                () async {
+                                                              setState(() {
+                                                                Project.projectId =
+                                                                    x['projectId'];
+                                                              });
+                                                              User? user =
+                                                                  FirebaseAuth
+                                                                      .instance
+                                                                      .currentUser;
+                                                              if (user !=
+                                                                  null) {
+                                                                await Project
+                                                                    .addBookmark();
+                                                                await Project
+                                                                    .getBookmark();
+                                                                setState(() {});
+                                                              } else {
+                                                                final snackBar =
+                                                                    SnackBar(
+                                                                  content:
+                                                                      const Text(
+                                                                          "Please Login to bookmark a project."),
+                                                                  action:
+                                                                      SnackBarAction(
+                                                                    label: "Ok",
+                                                                    textColor: Theme.of(
+                                                                            context)
+                                                                        .canvasColor,
+                                                                    onPressed:
+                                                                        () {},
+                                                                  ),
+                                                                );
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                        snackBar);
+                                                              }
+                                                            },
+                                                            icon: const Icon(
+                                                              Icons
+                                                                  .bookmark_border,
+                                                              size: 30,
+                                                            ),
+                                                          ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  child:
+                                                      FadeInImage.assetNetwork(
+                                                    placeholder:
+                                                        "assets/images/default.gif",
+                                                    image: x['imageUrl'],
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 15, bottom: 5),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          x['author'],
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        x['date'],
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                                 Text(
-                                                  x['date'],
+                                                  x['name'],
                                                   style: const TextStyle(
-                                                    fontSize: 14,
-                                                  ),
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  x['summary'],
+                                                  style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w100),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          Text(
-                                            x['name'],
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            x['summary'],
-                                            style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w100),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                        ),
+                                      )
+                                    : (projectName.contains(
+                                                searchController
+                                                    .text
+                                                    .toLowerCase()) ||
+                                            projectSummary
+                                                .contains(
+                                                    searchController
+                                                        .text
+                                                        .toLowerCase()) ||
+                                            projectKeyword
+                                                .contains(
+                                                    searchController
+                                                        .text
+                                                        .toLowerCase()) ||
+                                            projectCatagory
+                                                .contains(
+                                                    searchController
+                                                        .text
+                                                        .toLowerCase()) ||
+                                            projectDate.contains(
+                                                searchController.text
+                                                    .toLowerCase()) ||
+                                            projectAuthor.contains(
+                                                searchController.text
+                                                    .toLowerCase()))
+                                        ? FittedBox(
+                                            fit: BoxFit.fill,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Project.additionalDetails =
+                                                    x['additionalDetails'];
+                                                Project.author = x['author'];
+                                                Project.catagory =
+                                                    x['catagory'];
+                                                Project.date = x['date'];
+                                                Project.pdfUrl = x['pdfUrl'];
+                                                Project.imageUrl =
+                                                    x['imageUrl'];
+                                                Project.summary = x['summary'];
+                                                Project.name = x['name'];
+                                                Project.projectId =
+                                                    x['projectId'];
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            const ProjectDetailScreen()));
+                                              },
+                                              child: Container(
+                                                margin:
+                                                    const EdgeInsets.all(20),
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                width: size.width,
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .cardColor
+                                                      .withOpacity(0.4),
+                                                  boxShadow:
+                                                      MyTheme.neumorpShadow,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            x["catagory"],
+                                                          ),
+                                                        ),
+                                                        Project.bookmark
+                                                                .contains(x[
+                                                                    'projectId'])
+                                                            ? IconButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  setState(() {
+                                                                    Project.projectId =
+                                                                        x['projectId'];
+                                                                  });
+                                                                  await Project
+                                                                      .deleteBookmark();
+                                                                  setState(
+                                                                      () {});
+                                                                },
+                                                                icon:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .bookmark,
+                                                                  size: 30,
+                                                                ),
+                                                              )
+                                                            : IconButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  setState(() {
+                                                                    Project.projectId =
+                                                                        x['projectId'];
+                                                                  });
+                                                                  User? user =
+                                                                      FirebaseAuth
+                                                                          .instance
+                                                                          .currentUser;
+                                                                  if (user !=
+                                                                      null) {
+                                                                    await Project
+                                                                        .addBookmark();
+                                                                    await Project
+                                                                        .getBookmark();
+                                                                    setState(
+                                                                        () {});
+                                                                  } else {
+                                                                    final snackBar =
+                                                                        SnackBar(
+                                                                      content:
+                                                                          const Text(
+                                                                              "Please Login to bookmark a project."),
+                                                                      action:
+                                                                          SnackBarAction(
+                                                                        label:
+                                                                            "Ok",
+                                                                        textColor:
+                                                                            Theme.of(context).canvasColor,
+                                                                        onPressed:
+                                                                            () {},
+                                                                      ),
+                                                                    );
+                                                                    ScaffoldMessenger.of(
+                                                                            context)
+                                                                        .showSnackBar(
+                                                                            snackBar);
+                                                                  }
+                                                                },
+                                                                icon:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .bookmark_border,
+                                                                  size: 30,
+                                                                ),
+                                                              ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15),
+                                                      ),
+                                                      child: FadeInImage
+                                                          .assetNetwork(
+                                                        placeholder:
+                                                            "assets/images/default.gif",
+                                                        image: x['imageUrl'],
+                                                        fit: BoxFit.fill,
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 15,
+                                                              bottom: 5),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              x['author'],
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            x['date'],
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      x['name'],
+                                                      style: const TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      x['summary'],
+                                                      style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w100),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ))
+                                        : Container();
                               },
                             )
                           : const Center(

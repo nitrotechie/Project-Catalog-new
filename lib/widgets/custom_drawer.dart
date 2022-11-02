@@ -83,10 +83,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             ],
                           ),
                           onTap: () {
-                            Navigator.push(
+                            Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => const HomeScreen()));
+                                    builder: (_) => const HomeScreen()),
+                                (Route route) => false);
                           },
                         ),
                         const SizedBox(
