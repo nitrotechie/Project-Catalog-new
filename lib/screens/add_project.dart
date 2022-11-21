@@ -58,7 +58,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   @override
   void initState() {
     super.initState();
-    projectId = uuid.v1();
+    projectId = DateTime.now().toString() + uuid.v1();
     Data.getUsername();
   }
 
