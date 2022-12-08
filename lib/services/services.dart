@@ -41,6 +41,7 @@ Future logOut(BuildContext context) async {
   }
 }
 
+
 Future<bool> createAccountEmail(
     String name, String email, String password) async {
   FirebaseAuth _auth = FirebaseAuth.instance;
