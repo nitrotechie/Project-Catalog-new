@@ -313,7 +313,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                         .showSnackBar(snackBar);
                                   } on DioError catch (e) {
                                     final snackBar = SnackBar(
-                                      content: Text(e.message),
+                                      content: Text(e.message ?? ""),
                                       action: SnackBarAction(
                                         label: "Ok",
                                         // ignore: use_build_context_synchronously
@@ -458,7 +458,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20),
                                 borderSide: BorderSide(
-                                  color: Theme.of(context).buttonColor,
+                                  color: Theme.of(context).secondaryHeaderColor,
                                 ),
                               ),
                               hintText: "Add Comment",

@@ -173,7 +173,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   }
 
   openFile(PlatformFile file) {
-    OpenFilex.open(file.path);
+    OpenFilex.open(file.path!);
   }
 
   @override
@@ -219,7 +219,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(
-                              color: Theme.of(context).buttonColor,
+                              color: Theme.of(context).secondaryHeaderColor,
                             ),
                           ),
                           hintText: "Enter Project Title",
@@ -243,7 +243,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(
-                              color: Theme.of(context).buttonColor,
+                              color: Theme.of(context).secondaryHeaderColor,
                             ),
                           ),
                           hintText: "Enter Project Summary",
@@ -272,7 +272,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(
-                              color: Theme.of(context).buttonColor,
+                              color: Theme.of(context).secondaryHeaderColor,
                             ),
                           ),
                           hintText: "Enter Any Keywords",

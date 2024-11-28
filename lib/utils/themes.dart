@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:project_catalog/utils/theme_prefences.dart';
 
 class MyTheme with ChangeNotifier {
@@ -27,7 +26,6 @@ class MyTheme with ChangeNotifier {
   static ThemeData lightTheme(BuildContext context) => ThemeData(
         secondaryHeaderColor: darkBluishColor,
         primarySwatch: Colors.indigo,
-        fontFamily: GoogleFonts.poppins().fontFamily,
         cardColor: Colors.white,
         canvasColor: Colors.indigo[100],
         buttonTheme: ButtonThemeData(
@@ -42,7 +40,6 @@ class MyTheme with ChangeNotifier {
             color: Colors.black,
           ),
           titleTextStyle: TextStyle(
-            fontFamily: GoogleFonts.poppins().fontFamily,
             fontSize: 25,
           ),
         ),
@@ -58,7 +55,6 @@ class MyTheme with ChangeNotifier {
         brightness: Brightness.dark,
         primarySwatch: Colors.indigo,
         focusColor: Colors.transparent,
-        fontFamily: GoogleFonts.poppins().fontFamily,
         cardColor: Colors.black,
         canvasColor: Colors.grey[900],
         buttonTheme: ButtonThemeData(
@@ -73,7 +69,6 @@ class MyTheme with ChangeNotifier {
             color: Colors.white,
           ),
           titleTextStyle: TextStyle(
-            fontFamily: GoogleFonts.poppins().fontFamily,
             fontSize: 25,
           ),
         ),
